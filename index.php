@@ -1,4 +1,4 @@
-
+// some commenting
 <!DOCTYPE html>
 <html>
     <head>
@@ -10,5 +10,7 @@
             <h1>Gabriel Valencia's Resume Registery</h1>
             <p> <a href="login.php"> Please Log in</a> </p>
         </div>
+        <p><b>Note:</b> Your implementation should retain data across multiple logout/login sessions. 
+            This sample implementation clears all its data periodically - which you should not do in your implementation.</p>
     </body>
 </html>
