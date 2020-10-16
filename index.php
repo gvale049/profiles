@@ -1,4 +1,3 @@
-// some commenting
 <!DOCTYPE html>
 <html>
     <head>
@@ -8,9 +7,23 @@
     <body>
         <div class="container">
             <h1>Gabriel Valencia's Resume Registery</h1>
-            <p> <a href="login.php"> Please Log in</a> </p>
-        </div>
-        <p><b>Note:</b> Your implementation should retain data across multiple logout/login sessions. 
+            <?php
+                session_start();
+                require_once "pdo.php";
+
+                $message = isset($_SESSION['message']) ? $_SESSION['message'] : false;
+                if ( $message !== false) {
+                    echo $message;
+                    unset($_SESSION['message']);
+                }
+
+
+                echo "<p> <a href=".'login.php'."> Please Log in</a> </p>"
+            ?>
+            
+            <p><b>Note:</b> Your implementation should retain data across multiple logout/login sessions. 
             This sample implementation clears all its data periodically - which you should not do in your implementation.</p>
+        </div>
+        
     </body>
 </html>
