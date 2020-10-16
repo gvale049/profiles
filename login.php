@@ -4,12 +4,19 @@ session_start();
 
 require_once("pdo.php");
 
+
 $salt = 'XyZzy12*_';
 
 if (isset($_POST['cancel'])) {
     $_SESSION['cancel'] = $_POST['cancel'];
     header("location: index.php");
+    return;
 }
+
+if (isset( $_POST['email']) && isset( $_POST['pass'])) {
+
+}
+
 if (isset( $_POST['email']) && isset($_POST['pass'])) {
     
     $check = hash('md5', $salt.$_POST['pass']);
@@ -24,49 +31,71 @@ if (isset( $_POST['email']) && isset($_POST['pass'])) {
         $_SESSION['user_id'] = $row['user_id'];
 
         header("Location: index.php");
+        // error_log location: /Applications/Ampps/apache/logs/error_log
+        error_log("Login fail ".$_SESSION['error']." $check");
+        return;
+    }
+
+    if ($row === false) {
+        $_SESSION['error'] = '<p style="color: red;">'.htmlentities("Incorrect Password")."</p>\n";
+        
+        header("Location: login.php");
+        // error_log location: /Applications/Ampps/apache/logs/error_log
+        error_log("Login fail ".$_SESSION['error']." $check");
+        return;
     }
 }
 ?>
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Gabriel Valencia - login page</title>
-        <?php require_once "bootstrap.php" ?>
-    </head>
-    <body>
-        <div class="container">
-            <h1> Please Log In</h1>
-            <form method="POST" action="login.php">
-                <label for="email">Email</label>
-                <input type="text" name="email" id="email"><br/>
-                <label for="id_1723">Password</label>
-                <input type="password" name="pass" id="id_1723"><br/>
-                <input type="submit" onclick="return doValidate();" value="Log In">
-                <input type="submit" name="cancel" value="Cancel">
-            </form>
-            <script>
-                //function will validate the email and password
-                function doValidate() {
-                    console.log('Validating...');
-                    try {
-                        addr = document.getElementById('email').value;
-                        pw = document.getElementById('id_1723').value;
-                        console.log("Validating addr="+addr+" pw="+pw);
-                        if ( addr == null || addr == "" || pw == null || pw == "") {
-                            alert("Both fields must be filled out");
-                        }
-                        if ( addr.indexOf('@') == -1 ) {
-                            alert(" Invalid email address");
-                            return false;
-                        }
-                        return true;
-                    } catch(e) {
-                        return false;
-                    }
+<head>
+    <title>Gabriel Valencia - login page</title>
+    <?php require_once "bootstrap.php" ?>
+</head>
+<body>
+<div class="container">
+    <h1> Please Log In</h1>
+    <?php
+    $error = isset($_SESSION['error']) ? $_SESSION['error'] : false;
+
+    if ( $error !== false ) {
+            // Look closely at the use of single and double quotes
+            echo($error);
+            unset($_SESSION['error']);
+    }
+    ?>
+    <form method="POST" action="login.php">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email"><br/>
+        <label for="id_1723">Password</label>
+        <input type="password" name="pass" id="id_1723"><br/>
+        <input type="submit" onclick="return doValidate();" value="Log In">
+        <input type="submit" name="cancel" value="Cancel">
+    </form>
+    <script>
+        //function will validate the email and password
+        function doValidate() {
+            console.log('Validating...');
+            try {
+                addr = document.getElementById('email').value;
+                pw = document.getElementById('id_1723').value;
+                console.log("Validating addr="+addr+" pw="+pw);
+                if ( addr == null || addr == "" || pw == null || pw == "") {
+                    alert("Both fields must be filled out");
                     return false;
                 }
-            </script>
-        </div>
-    </body>
+                if ( addr.indexOf('@') == -1 ) {
+                    alert(" Invalid email address");
+                    return false;
+                }
+                return true;
+            } catch(e) {
+                return false;
+            }
+            return false;
+        }
+    </script>
+</div>
+</body>
 </html>
