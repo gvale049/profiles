@@ -57,14 +57,16 @@ if (isset( $_POST['email']) && isset($_POST['pass'])) {
 <div class="container">
     <h1> Please Log In</h1>
     <?php
+
     $error = isset($_SESSION['error']) ? $_SESSION['error'] : false;
 
     if ( $error !== false ) {
-            // Look closely at the use of single and double quotes
             echo($error);
             unset($_SESSION['error']);
     }
+
     ?>
+    
     <form method="POST" action="login.php">
         <label for="email">Email</label>
         <input type="text" name="email" id="email"><br/>
