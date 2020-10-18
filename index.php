@@ -14,6 +14,26 @@
         if (isset($_SESSION['user_id'])) {
             
             echo "<p> <a href=".'logout.php'."> Logout</a> </p>";
+
+            $stmt = $pdo->query("SELECT profile_id, first_name, last_name, headline FROM Profile");
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ( isset($rows['first_name'])) {
+                echo("<p> No rows found </p>");
+            }
+            else {
+                echo('<table border="1">'."\n");
+                foreach($rows as $row) {
+                    $name = ($row['first_name']." ".$row['last_name']);
+                    echo("<tr><td>");
+                    echo('<a href="view.php?profile_id='.$row['profile_id'].'">'.$name.'</a>');
+                    echo("</td><td>");
+                    echo($row['headline']);
+                    echo("</td><td>");
+                    echo('<a href="edit.php?profile_id='.$row['profile_id'].'">Edit</a> / ');
+                    echo('<a href="delete.php?profile_id='.$row['profile_id'].'">Delete</a>');
+                }
+                echo('</table>'."\n");
+            }
             echo "<p> <a href=".'add.php'."> Add New Entry</a> </p>";
 
         } else {
@@ -25,8 +45,10 @@
             unset($_SESSION['message']);
         }
 
+        if ( isset($_SESSION['user_id']) ) {
 
-        
+        }
+      
     ?>
     
     <p><b>Note:</b> Your implementation should retain data across multiple logout/login sessions. 
