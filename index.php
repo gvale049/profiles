@@ -37,7 +37,26 @@
             echo "<p> <a href=".'add.php'."> Add New Entry</a> </p>";
 
         } else {
+
             echo "<p> <a href=".'login.php'."> Please Log in</a> </p>";
+
+            $stmt = $pdo->query("SELECT profile_id, first_name, last_name, headline FROM Profile");
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if ( isset($rows['first_name'])) {
+                echo("<p> No rows found </p>");
+            }
+            else {
+                echo('<table border="1">'."\n");
+                foreach($rows as $row) {
+                    $name = ($row['first_name']." ".$row['last_name']);
+                    echo("<tr><td>");
+                    echo('<a href="view.php?profile_id='.$row['profile_id'].'">'.$name.'</a>');
+                    echo("</td><td>");
+                    echo($row['headline']);
+                }
+                echo('</table>'."\n");
+            }
         }
         $message = isset($_SESSION['message']) ? $_SESSION['message'] : false;
         if ( $message !== false) {
