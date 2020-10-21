@@ -91,7 +91,7 @@
         <p> Last Name: 
             <input type="text" name="last_name" size="60"/></p>
         <p> Email:
-            <input type="text" name="email" size="30/"/></p>
+            <input type="text" name="email" size="30"/></p>
         <p> Headline:<br/>
             <input type="text" name="headline" size="80"/></p>
         <p> Summary: </br>
