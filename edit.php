@@ -45,6 +45,31 @@
             header("Location: edit.php?profile_id=".$_POST['profile_id']);
             return;
         }
+
+        $stmt = $pdo->prepare('DELETE FROM Position WHERE profile_id=:pid');
+        $stmt->execute(array(':pid' => $_REQUEST['profile_id']));
+
+        $rank = 1;
+        for($i=1; $i<=9; $i++) {
+            if ( ! isset($_POST['year'.$i]) ) continue;
+            if ( ! isset($_POST['desc'.$i]) ) continue;
+
+            $year = $_POST['year'.$i];
+            $desc = $_POST['desc'.$i];
+            $stmt = $pdo->prepare('INSERT INTO Position
+                (profile_id, rank, year, description)
+                VALUES ( :pid, :rank, :year, :desc)');
+
+            $stmt->execute(array(
+            ':pid' => htmlentities($_GET['profile_id']),
+            ':rank' => htmlentities($rank),
+            ':year' => htmlentities($year),
+            ':desc' => htmlentities($desc))
+            );
+
+        $rank++;
+
+        }
           
         $sql = "UPDATE Profile SET first_name = :first_name,
         last_name = :last_name, email = :email, headline = :headline,
@@ -110,10 +135,38 @@
 <input type="text" name="headline" size="80" value="<?= $headline ?>"></p>
 <p>Summary:<br/>
 <textarea name="summary" rows="8" cols="80" value=><?= $summary ?></textarea>
+<p>Position: <input type="submit" id="addPos" value="+"></p>
+<div id="position_fields"></div>
+
 <input type="hidden" name="profile_id" value="<?= $profile_id ?>">
 <p><input type="submit" value="Save"/>
 <input type="submit" name="cancel" value="Cancel"></p>
 </form>
+<script>
+        countPos = 0;
+
+        $(document).ready(function(){
+            window.console && console.log('Document ready called');
+            $('#addPos').click(function(event){
+                // http://api.jquery.com/event.preventdefault/
+                event.preventDefault();
+                if (countPos >= 9) {
+                    alert("Maximum of nine position entries exceeded");
+                    return;
+                }
+                countPos++;
+                window.console && console.log("Adding position "+ countPos);
+                $('#position_fields').append(
+                    '<div id="position'+countPos+'"> \
+                    <p>Year: <input type="text" name="year'+countPos+'" value="" /> \
+                    <input type="button" value="-" \
+                        onclick="$(\'#position'+countPos+'\').remove();return false;"></p> \
+                        <textarea name="desc'+countPos+'" rows="8" cols="80"></textarea>\
+                    </div>'
+                );
+            });
+        });
+    </script>
 </div>        
 </body>
 </html>

@@ -64,6 +64,7 @@
             
             $rank = 1;
             for($i=1; $i<=9; $i++) {
+                // cotinue will skip the rest of the current loop to the next iteration
                 if ( ! isset($_POST['year'.$i]) ) continue;
                 if ( ! isset($_POST['desc'.$i]) ) continue;
 
@@ -92,6 +93,7 @@
 
     function validatePos() {
         for ($i = 0; $i <= 9; $i++) {
+            // cotinue will skip the rest of the current loop to the next iteration
             if ( ! isset($_POST['year'.$i]) ) continue;
             if ( ! isset($_POST['desc'.$i]) ) continue;
 
@@ -172,7 +174,6 @@
             });
         });
     </script>
-    <?php validatePos();?>
 </div>
 </body>
 </html>
