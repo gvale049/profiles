@@ -43,8 +43,8 @@ if(isset($_POST['delete']) && isset($_POST['profile_id'])) {
 <body>
 <div class="container">
 <h1> Deleting profile</h1>
-<?echo "<p>First Name: ".$first_name."</p>";?>
-<?echo "<p>Last Name: ".$last_name."</p>";?>
+<?php echo "<p>First Name: ".$first_name."</p>";
+echo "<p>Last Name: ".$last_name."</p>";?>
 
 <form method="post">
     <input type="hidden" name="profile_id" value="  <? $profile_id ?>">
