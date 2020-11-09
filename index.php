@@ -1,7 +1,10 @@
 <!DOCTYPE htmld
 <html>
 <head>
-    <?php require_once "bootstrap.php"; ?>
+    <?php 
+        require_once "bootstrap.php"; 
+        require_once "util.php";
+    ?>
     <title> Gabriel Valencia - Index page </title>
 </head>
 <body>
@@ -10,7 +13,7 @@
     <?php
         session_start();
         require_once "pdo.php";
-
+        flashMessages();
         if (isset($_SESSION['user_id'])) {
             
             echo "<p> <a href=".'logout.php'."> Logout</a> </p>";

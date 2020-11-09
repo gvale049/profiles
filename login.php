@@ -1,9 +1,13 @@
 <?php
 
+require_once("pdo.php");
+require_once("util.php");
+
 session_start();
 
-require_once("pdo.php");
-
+unset($_SESSION['name']);
+unset($_SESSION['user_id']);
+unset($_SESSION['success']);
 
 $salt = 'XyZzy12*_';
 
@@ -11,10 +15,6 @@ if (isset($_POST['cancel'])) {
     $_SESSION['cancel'] = $_POST['cancel'];
     header("location: index.php");
     return;
-}
-
-if (isset( $_POST['email']) && isset( $_POST['pass'])) {
-
 }
 
 if (isset( $_POST['email']) && isset($_POST['pass'])) {
@@ -37,7 +37,7 @@ if (isset( $_POST['email']) && isset($_POST['pass'])) {
     }
 
     if ($row === false) {
-        $_SESSION['error'] = '<p style="color: red;">'.htmlentities("Incorrect Password")."</p>\n";
+        $_SESSION['error'] = "Incorrect Password";
         
         header("Location: login.php");
         // error_log location: /Applications/Ampps/apache/logs/error_log
@@ -57,14 +57,15 @@ if (isset( $_POST['email']) && isset($_POST['pass'])) {
 <div class="container">
     <h1> Please Log In</h1>
     <?php
-
+    /*
     $error = isset($_SESSION['error']) ? $_SESSION['error'] : false;
 
     if ( $error !== false ) {
             echo($error);
             unset($_SESSION['error']);
     }
-
+    */
+    flashMessages();
     ?>
     
     <form method="POST" action="login.php">
