@@ -13,7 +13,7 @@
         return;
     }
 
-    if (! isset($_REQUEST['profile_id']) ) {
+    if (! isset($_REQUEST['profile_id']) ) { 
         $_SESSION['error'] = "Missing profile_id";
         header('Location: index.php');
         return;
@@ -67,7 +67,7 @@
             ':email' => htmlentities($_POST['email']),
             ':headline' => htmlentities($_POST['headline']),
             ':summary' => htmlentities($_POST['summary']),
-            ':user_id' => htmlentities($_POST['user_id']),
+            ':user_id' => htmlentities($_SESSION['user_id']),
             ':profile_id' => htmlentities($_REQUEST['profile_id']))
         );
 
@@ -183,7 +183,40 @@ echo("</div></p>\n");
                     <textarea name="desc'+countPos+'" rows="8" cols="80"></textarea>\
                 </div>');
         });
+
+        $('#addEdu').click(function(events) {
+            event.preventDefault();
+            if (countEdu >= 9) {
+                alert("Maximum of 9 education entries exceeded");
+                return;
+            }
+            countEdu++;
+            windows.console && console.log("Adding Education " + countEdu);
+
+            // grab some HTML with hotspots and insert into DOM
+            var source = $("#edu-template").html();
+            $('#edu_fields').append(source.replace(/@COUNT@/g, countEdu));
+
+            // Add the even handler to the new ones
+            $('.school').autocomplete({
+                source: "school.php"
+            });
+        });
+
+        $('.school').autocomplete({
+            source: "school.php"
+        });
     });
+</script>
+
+<!-- HTML with subtitution hot spots -->
+<script id="edu-template" type="text">
+    <div id="edu@COUNT@">
+        <p>Year: <input type="text" name="edu_year@COUNT@" value="" />
+        <input type="button" value="-" onclick="$('#edu@COUNT@').remove(); return false;"><br>
+        <p>School: <input type="text" size"80" name="edu_school@COUNT@" class="school" value"" />
+        </p>
+    </div>
 </script>
 </div>        
 </body>

@@ -5,9 +5,8 @@ require_once "util.php";
 
 if ( isset($_GET) ) {
     $profile_id = $_GET['profile_id'];
-    $stmt = $pdo->prepare("SELECT * FROM Profile WHERE profile_id=:xyz AND user_id = :uid");
-    $stmt->execute(array(":xyz" => $profile_id, 
-                        ":uid" => $_SESSION['user_id']));
+    $stmt = $pdo->prepare("SELECT * FROM Profile WHERE profile_id=:xyz");
+    $stmt->execute(array(":xyz" => $profile_id));
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -39,10 +38,12 @@ if ( isset($_GET) ) {
         $rank = 0;
         $positions = loadPos($pdo, $_GET['profile_id']);
         $pos = 0;
+        echo('<p> Position </p> </br>');
+        echo('<ul>');
         foreach($positions as $position) {
-            echo('<p>Year: '.$position['year'].'</p>');
-            echo('<p>Description:'.$position['description'].'</p>');
+            echo('<li>'.$position['year'].': '.$position['description'].'</li>');
         }
+        echo('</ul>');
         echo('<a href="index.php">Done</a>');
     }
     

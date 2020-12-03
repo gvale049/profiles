@@ -18,8 +18,7 @@
         isset($_POST['email']) && isset($_POST['headline']) && 
         isset($_POST['summary'])) {
     
-        
-        
+            
         $msg = validateProfile();
         if (is_string($msg)) {
             $_SESSION['error'] = $msg;
@@ -112,6 +111,9 @@
             <input type="text" name="headline" size="80"/></p>
         <p> Summary: </br>
             <textarea name="summary" rows="8" cols="80"></textarea></p>
+        <p> Education: <input type="submit" id="addEdu" value="+">
+        <div id="edu_fields"></div>
+        </p>
         <p> Position: <input type="submit" id="addPos" value="+"></p>
         <div id="position_fields"></div>
         <p>
@@ -122,6 +124,7 @@
     <?$_SESSION['error'] = validateProfile();?>
     <script>
         countPos = 0;
+        countEdu = 0;
 
         $(document).ready(function(){
             window.console && console.log('Document ready called');
@@ -142,6 +145,30 @@
                         <textarea name="desc'+countPos+'" rows="8" cols="80"></textarea>\
                     </div>'
                 );
+            });
+
+            $('#addEdu').click(function(event){
+                event.preventDefault();
+                if(countEdu >= 9) {
+                    alert("Maximum of nine education entries exceeded");
+                    return;
+                }
+                countEdu++;
+                window.console && console.log("Adding education " +countEdu);
+
+                $('#edu_fields').append(
+                    '<div id="edu'+countEdu+'"> \ 
+                    <p>Year: <input type="text" name="edu_year'+countEdu+'" value="" /> \
+                    <input type="buttom" value="-" onclick="$(\'#edu'+countEdu+'\').remove();return false;"><br>\
+                    <p>School: <input type="text" size="80" name="edu_school'+countEdu+'" class="school" value="" />\
+                    </p></div>'
+                );
+
+                $('.school').autocomplete({
+                    source: "school.php"
+                });
+
+
             });
         });
     </script>

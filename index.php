@@ -41,7 +41,7 @@
 
         } else {
 
-            echo "<p> <a href=".'login.php'."> Please Log in</a> </p>";
+            echo "<p> <a href=".'login.php'."> Please log in</a> </p>";
 
             $stmt = $pdo->query("SELECT profile_id, first_name, last_name, headline FROM Profile");
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
