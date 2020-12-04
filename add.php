@@ -26,6 +26,14 @@
             return;
         }
 
+        $msg = validateEdu();
+                
+        if (is_string($msg)) {
+            $_SESSION['error'] = $msg;
+            header("Location: add.php");
+            return;
+        }
+
         $msg = validatePos();
                 
         if (is_string($msg)) {
@@ -71,6 +79,9 @@
             $rank++;
         
         }
+
+        // Insert Education entries
+        insertEducations($pdo, $profile_id);
         
         $_SESSION['success'] = "Profile Added";
         header('Location: index.php');
@@ -147,30 +158,39 @@
                 );
             });
 
-            $('#addEdu').click(function(event){
+            $('#addEdu').click(function(event) {
                 event.preventDefault();
-                if(countEdu >= 9) {
-                    alert("Maximum of nine education entries exceeded");
+                if (countEdu >= 9) {
+                    alert("Maximum of 9 education entries exceeded");
                     return;
                 }
                 countEdu++;
-                window.console && console.log("Adding education " +countEdu);
+                window.console && console.log("Adding Education " + countEdu);
 
-                $('#edu_fields').append(
-                    '<div id="edu'+countEdu+'"> \ 
-                    <p>Year: <input type="text" name="edu_year'+countEdu+'" value="" /> \
-                    <input type="buttom" value="-" onclick="$(\'#edu'+countEdu+'\').remove();return false;"><br>\
-                    <p>School: <input type="text" size="80" name="edu_school'+countEdu+'" class="school" value="" />\
-                    </p></div>'
-                );
+                // grab some HTML with hotspots and insert into DOM
+                var source = $("#edu-template").html();
+                $('#edu_fields').append(source.replace(/@COUNT@/g, countEdu));
+                
+                // Add the even handler to the new ones
+                $('.school').autocomplete({
+                    source: "school.php"
+                });
+            });
 
                 $('.school').autocomplete({
                     source: "school.php"
                 });
 
-
-            });
         });
+    </script>
+    <!--HTML with substitution hot spots -->
+    <script id="edu-template" type="text">
+        <div id="edu@COUNT@">
+            <p>Year: <input type="text" name="edu_year@COUNT@" value="" />
+            <input type="button" value="-" onclick="$('#edu@COUNT@').remove(); return false;"><br>
+            <p>School: <input type="text" size="80" name="edu_school@COUNT@" class="school" value="" />
+            </p>
+        </div>
     </script>
 </div>
 </body>

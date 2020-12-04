@@ -35,11 +35,20 @@ if ( isset($_GET) ) {
             echo('<p> Headline: <br>'.$row['headline'].'</p>');
             echo('<p> Summary: <br>'.$row['summary'].'</p>');
         }
+        $educations = loadEdu($pdo, $_GET['profile_id']);
+        echo('<p> Education </p> <ul>');
+        
+        foreach($educations as $education) {
+            echo('<li>'.$education['year'].': '.$education['name'].'</li>');
+        }
+
+        echo('</ul>');
+
         $rank = 0;
         $positions = loadPos($pdo, $_GET['profile_id']);
         $pos = 0;
-        echo('<p> Position </p> </br>');
-        echo('<ul>');
+        echo('<p> Position </p> <ul>');
+        
         foreach($positions as $position) {
             echo('<li>'.$position['year'].': '.$position['description'].'</li>');
         }

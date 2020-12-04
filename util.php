@@ -50,12 +50,30 @@ function loadPos($pdo, $profile_id) {
     return $positions;
 }
 
+function validateEdu() {
+    
+    for( $i = 1; $i <= 9; $i++) {
+        if ( ! isset( $_POST['edu_year'.$i]) ) continue;
+        if ( ! isset( $_POST['edu_school'.$i]) ) continue;
+        $year = $_POST['edu_year'.$i];
+        $name = $_POST['edu_school'.$i];
+        if ( strlen($year) == 0 || strlen($name) == 0 ) {
+            return "All fields are required";
+        }
+
+        if ( ! is_numeric($year) ) {
+            return "Education year must be numeric";
+        }
+    }
+    return true;
+}
+
 function loadEdu($pdo, $profile_id) {
     $stmt = $pdo->prepare('SELECT year, name FROM Education
     JOIN Institution
-        ON Education.intitution_id = Institution.institution_id
+        ON Education.institution_id = Institution.institution_id
     WHERE profile_id = :prof ORDER BY rank');
-    $stmt->execute(array(':prof' => $porfile_id));
+    $stmt->execute(array(':prof' => $profile_id));
     $educations = $stmt->fetchAll(PDO::FETCH_ASSOC);
     return $educations;
 }
@@ -70,7 +88,7 @@ function insertEducations($pdo, $profile_id) {
 
         //Looking the school if it is there.
         $institution_id = false;
-        $stmt = $pdo->prepare('SELECT istitution_id FROM 
+        $stmt = $pdo->prepare('SELECT institution_id FROM 
                 Institution WHERE name = :name');
         $stmt->execute(array(':name' => $school));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

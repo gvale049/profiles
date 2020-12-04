@@ -55,6 +55,13 @@
             header("Location: edit.php?profile_id=". $_REQUEST["profile_id"]);
             return;
         }
+
+        $msg = validateEdu();
+        if ( is_string($msg) ) {
+            $_SESSION['error'] = $msg;
+            header("Location: edit.php?profile_id=". $_REQUEST["profile_id"]);
+            return;
+        }
         
         $sql = "UPDATE Profile SET first_name = :first_name,
         last_name = :last_name, email = :email, headline = :headline,
@@ -95,13 +102,24 @@
             $rank++;
 
         }
- 
+        
+        // Clear out old education entries
+        $stmt = $pdo->prepare('DELETE FROM Education 
+            WHERE profile_id=:pid');
+        $stmt->execute(array(':pid' => $_REQUEST['profile_id']));
+
+        // Insert Education entries
+        insertEducations($pdo, $_REQUEST['profile_id']);
+
         $_SESSION['success'] = "Record Updated";
         header( 'Location: index.php' );
         return;   
     }
 
     $positions = loadPos($pdo, $_REQUEST['profile_id']);
+    $schools = loadEdu($pdo, $_REQUEST['profile_id']);
+
+
 
 ?>
 <!DOCTYPE html>
@@ -136,6 +154,24 @@ value="<?= htmlentities($hl); ?>" /></p>
 
 <?php
 
+$countEdu = 0;
+echo('<p>Education: <input type="submit" id="addEdu" value="+">'."\n");
+echo('<div id="edu_fields">'."\n");
+if (count($schools) > 0) {
+    foreach($schools as $school) {
+        $countEdu++;
+        echo('<div id="edu'.$countEdu.'">');
+        echo
+        '<p>Year: <input type="text" name="edu_year'.$countEdu.'" value="'.$school['year'].'" />
+        <input type="button" value="-" onclick="$(\'#edu'.$countEdu.'\').remove();return false;"></p>
+        <p>School: <input type="text" size="80" name="edu_school'.$countEdu.'" class="school" 
+        value="'.htmlentities($school['name']).'" />';
+        echo "\n</div>\n";
+    }
+}
+
+echo("</div></p>\n");
+
 $pos = 0;
 echo('<p>Position: <input type="submit" id="addPos" value="+">'."\n");
 echo('<div id="position_fields">'."\n");
@@ -163,6 +199,7 @@ echo("</div></p>\n");
 <script src="js/jquery-ui-1.11.4.js"></script>
 <script>
     countPos = <?= $pos ?>;
+    countEdu = <?= $countEdu ?>;
 
     $(document).ready(function(){
         window.console && console.log('Document ready called');
@@ -184,19 +221,19 @@ echo("</div></p>\n");
                 </div>');
         });
 
-        $('#addEdu').click(function(events) {
+        $('#addEdu').click(function(event) {
             event.preventDefault();
             if (countEdu >= 9) {
                 alert("Maximum of 9 education entries exceeded");
                 return;
             }
             countEdu++;
-            windows.console && console.log("Adding Education " + countEdu);
+            window.console && console.log("Adding Education " + countEdu);
 
             // grab some HTML with hotspots and insert into DOM
             var source = $("#edu-template").html();
             $('#edu_fields').append(source.replace(/@COUNT@/g, countEdu));
-
+            
             // Add the even handler to the new ones
             $('.school').autocomplete({
                 source: "school.php"
@@ -209,12 +246,12 @@ echo("</div></p>\n");
     });
 </script>
 
-<!-- HTML with subtitution hot spots -->
+<!--HTML with substitution hot spots -->
 <script id="edu-template" type="text">
     <div id="edu@COUNT@">
         <p>Year: <input type="text" name="edu_year@COUNT@" value="" />
         <input type="button" value="-" onclick="$('#edu@COUNT@').remove(); return false;"><br>
-        <p>School: <input type="text" size"80" name="edu_school@COUNT@" class="school" value"" />
+        <p>School: <input type="text" size="80" name="edu_school@COUNT@" class="school" value="" />
         </p>
     </div>
 </script>
